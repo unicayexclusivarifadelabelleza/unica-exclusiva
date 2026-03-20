@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  tickets   Ticket[]
+  payments  Payment[]
+  winners  Winner[]
+}
+
+model Raffle {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("active") // active, completed, cancelled
+  ticketPrice Int      // 1000, 2000, or 3000
+  maxTickets  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  tickets Ticket[]
+  prizes  Prize[]
+  draws   Draw[]
+}
+
+model Ticket {
+  id        String   @id @default(cuid())
+  number    Int      // Ticket number (1-50 per draw)
+  status    String   @default("available") // available, sold, winner
+  raffleId  String
+  userId    String?
+  drawId    String?
+  paymentId String?
+  soldAt    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  raffle    Raffle   @relation(fields: [raffleId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+  draw      Draw?    @relation(fields: [drawId], references: [id])
+  winner    Winner?
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+
+  @@unique([raffleId, number, drawId])
+}
+
+model Prize {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  value       Int      // Prize value
+  imageUrl    String?
+  raffleId    String
+  createdAt   DateTime @default(now())
+  
+  raffle   Raffle   @relation(fields: [raffleId], references: [id])
+  winners  Winner[]
+}
+
+model Draw {
+  id          String   @id @default(cuid())
+  raffleId    String
+  drawNumber  Int      // Sequential draw number for the raffle
+  totalTickets Int     // Total tickets in this draw
+  winnersCount Int     // Number of winners (based on tickets sold)
+  status      String   @default("pending") // pending, completed
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  
+  raffle   Raffle   @relation(fields: [raffleId], references: [id])
+  tickets  Ticket[]
+  winners  Winner[]
+}
+
+model Winner {
+  id        String   @id @default(cuid())
+  drawId    String
+  prizeId   String
+  ticketId  String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+  
+  draw   Draw   @relation(fields: [drawId], references: [id])
+  prize  Prize  @relation(fields: [prizeId], references: [id])
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  amount          Int
+  paymentMethod   String   @default("mercadopago")
+  status          String   @default("pending") // pending, completed, failed
+  transactionId   String?  // Mercado Pago transaction ID
+  preferenceId    String?  // Mercado Pago preference ID
+  metadata        String?  // JSON string with additional info
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id])
+  tickets Ticket[]
+}
