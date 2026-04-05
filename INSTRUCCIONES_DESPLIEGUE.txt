@@ -1,0 +1,159 @@
+═════════════════════════════════════════════════════════════
+   INSTRUCCIONES PARA DESPLEGAR EN VERCEL - PASO A PASO
+═════════════════════════════════════════════════════════════
+
+🎯 Todo está verificado y listo para desplegar!
+
+───────────────────────────────────────────────────────────────
+PASO 1: Subir el código a GitHub
+───────────────────────────────────────────────────────────────
+
+Si aún no tienes un repositorio en GitHub:
+
+1. Crea una cuenta en github.com
+2. Crea un nuevo repositorio
+3. En tu terminal, ejecuta:
+
+   git init
+   git add .
+   git commit -m "Ready for Vercel deployment"
+   git remote add origin TU_REPO_URL
+   git branch -M main
+   git push -u origin main
+
+Si ya tienes un repositorio:
+
+   git add .
+   git commit -m "Ready for Vercel"
+   git push
+
+───────────────────────────────────────────────────────────────
+PASO 2: Crear cuenta en Vercel
+───────────────────────────────────────────────────────────────
+
+1. Ve a https://vercel.com
+2. Crea una cuenta (puedes usar tu cuenta de GitHub)
+3. Conecta tu cuenta de GitHub a Vercel
+
+───────────────────────────────────────────────────────────────
+PASO 3: Importar el proyecto en Vercel
+───────────────────────────────────────────────────────────────
+
+1. En Vercel, haz clic en "Add New Project"
+2. Busca y selecciona tu repositorio de GitHub
+3. Vercel detectará que es un proyecto Next.js
+
+───────────────────────────────────────────────────────────────
+PASO 4: CONFIGURAR VARIABLE DE ENTORNO (CRÍTICO)
+───────────────────────────────────────────────────────────────
+
+⚠️  ESTE PASO ES OBLIGATORIO - SIN ESTO NO FUNCIONARÁ ⚠️
+
+En la sección "Environment Variables" de Vercel:
+
+Variable: DATABASE_URL
+Valor: postgresql://postgres.gtvzgfifbfymsdkvejin:!KCBF8c2HFr,9X3@aws-1-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require
+
+Environment: Production, Preview, Development (selecciona los tres)
+
+Haz clic en "Add"
+
+───────────────────────────────────────────────────────────────
+PASO 5: Configurar el build
+───────────────────────────────────────────────────────────────
+
+Vercel debería detectar automáticamente:
+
+Framework Preset: Next.js
+Build Command: bun run build
+Output Directory: .next
+Install Command: bun install
+
+Si no, configúralo manualmente.
+
+───────────────────────────────────────────────────────────────
+PASO 6: Seleccionar región
+───────────────────────────────────────────────────────────────
+
+Para mejor rendimiento en Chile:
+
+Region: Santiago, Chile (scl1)
+
+───────────────────────────────────────────────────────────────
+PASO 7: Desplegar
+───────────────────────────────────────────────────────────────
+
+1. Haz clic en "Deploy"
+2. Espera unos minutos mientras Vercel compila y despliega
+3. Verás los logs de compilación en tiempo real
+
+───────────────────────────────────────────────────────────────
+PASO 8: Verificar el despliegue
+───────────────────────────────────────────────────────────────
+
+Una vez completado, Vercel te dará una URL como:
+https://tu-proyecto.vercel.app
+
+Visita esa URL y verifica:
+✓ La página principal carga
+✓ Ves "Única y Exclusiva Rifa de la Belleza"
+✓ Los 3 niveles de boletos aparecen (Bronce, Plata, Oro)
+✓ Puedes abrir el modal para comprar boletos
+✓ Los premios se cargan desde la base de datos
+
+───────────────────────────────────────────────────────────────
+PASO 9: Actualizaciones futuras
+───────────────────────────────────────────────────────────────
+
+Cada vez que hagas cambios:
+
+git add .
+git commit -m "Descripción del cambio"
+git push
+
+Vercel desplegará automáticamente los cambios.
+
+───────────────────────────────────────────────────────────────
+🔧 SOLUCIÓN DE PROBLEMAS
+───────────────────────────────────────────────────────────────
+
+❌ "Database connection failed"
+   Solución: Verifica que DATABASE_URL esté configurada en Vercel
+
+❌ "Page not found"
+   Solución: Revisa los logs de build en Vercel Dashboard
+
+❌ La página carga pero no muestra contenido
+   Solución: Verifica que DATABASE_URL sea correcta
+
+Para más detalles, lee VERCEL_DEPLOY_GUIDE.md
+
+───────────────────────────────────────────────────────────────
+📞 URLs importantes después del despliegue
+───────────────────────────────────────────────────────────────
+
+Página principal: https://tu-dominio.vercel.app/
+Panel de admin: https://tu-dominio.vercel.app/admin
+
+───────────────────────────────────────────────────────────────
+✅ CHECKLIST DE DESPLIEGUE
+───────────────────────────────────────────────────────────────
+
+[ ] Código subido a GitHub
+[ ] Cuenta creada en Vercel
+[ ] Repositorio importado en Vercel
+[ ] DATABASE_URL configurada (OBLIGATORIO)
+[ ] Build command verificado
+[ ] Región seleccionada (Santiago, Chile)
+[ ] Despliegue completado
+[ ] Sitio verificado funcionando
+
+───────────────────────────────────────────────────────────────
+
+¡Listo! Tu aplicación estará en línea en unos minutos.
+
+Para cualquier problema, revisa los archivos:
+- VERCEL_DEPLOY_GUIDE.md (guía detallada)
+- DEPLOYMENT.md (documentación completa)
+
+═════════════════════════════════════════════════════════════

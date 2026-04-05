@@ -1,0 +1,15 @@
+{
+  "buildCommand": "bun run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "regions": ["scl1"],
+  "env": {
+    "DATABASE_URL": "@database_url"
+  },
+  "build": {
+    "env": {
+      "DATABASE_URL": "@database_url"
+    }
+  },
+  "crons": []
+}
