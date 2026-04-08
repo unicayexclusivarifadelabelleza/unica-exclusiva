@@ -29,13 +29,7 @@ export function RouletteWheel({
   const [loading, setLoading] = useState(true)
   const [selectedTier, setSelectedTier] = useState<string | null>(null) // null = all
   const [countsByTier, setCountsByTier] = useState({ bronce: 0, plata: 0, oro: 0 })
-  const [mounted, setMounted] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  // Prevent hydration issues
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Generate demo participants
   const demoParticipants = Array.from({ length: 8 }, (_, i) => ({
@@ -46,8 +40,6 @@ export function RouletteWheel({
 
   // Load real participants from database
   useEffect(() => {
-    if (!mounted) return
-
     async function loadParticipants() {
       try {
         setLoading(true)
@@ -72,7 +64,7 @@ export function RouletteWheel({
     }
 
     loadParticipants()
-  }, [mounted, selectedTier])
+  }, [selectedTier])
 
   // Use real participants if available, otherwise use demo
   const wheelParticipants = realParticipants.length > 0 ? realParticipants : demoParticipants
@@ -263,20 +255,6 @@ export function RouletteWheel({
     } catch (error) {
       console.error('Error saving winner to database:', error)
     }
-  }
-
-  // Don't render until mounted to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <div className="text-center py-8">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground">Cargando ruleta...</p>
-          </div>
-        </CardHeader>
-      </Card>
-    )
   }
 
   return (

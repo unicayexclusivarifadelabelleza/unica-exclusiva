@@ -25,16 +25,9 @@ interface PrizesResponse {
 export function PrizesShowcase() {
   const [prizes, setPrizes] = useState<Prize[]>([])
   const [loading, setLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-
     async function fetchPrizes() {
       try {
         const response = await fetch('/api/prizes')
@@ -49,17 +42,7 @@ export function PrizesShowcase() {
     }
 
     fetchPrizes()
-  }, [mounted])
-
-  // Don't render anything until mounted to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <div className="text-center py-12">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        <p className="mt-4 text-muted-foreground">Cargando premios...</p>
-      </div>
-    )
-  }
+  }, [])
 
   if (loading) {
     return (
