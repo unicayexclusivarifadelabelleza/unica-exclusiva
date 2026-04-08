@@ -25,9 +25,16 @@ interface PrizesResponse {
 export function PrizesShowcase() {
   const [prizes, setPrizes] = useState<Prize[]>([])
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
     async function fetchPrizes() {
       try {
         const response = await fetch('/api/prizes')
@@ -42,7 +49,25 @@ export function PrizesShowcase() {
     }
 
     fetchPrizes()
-  }, [])
+  }, [mounted])
+
+  if (!mounted) {
+    return (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Card key={i} className="border border-white/20">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="h-48 bg-white/10 rounded-lg animate-pulse"></div>
+                <div className="h-4 bg-white/10 rounded animate-pulse w-3/4"></div>
+                <div className="h-4 bg-white/10 rounded animate-pulse w-1/2"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
+  }
 
   if (loading) {
     return (
