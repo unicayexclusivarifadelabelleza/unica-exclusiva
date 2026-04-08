@@ -142,6 +142,8 @@ export function RouletteWheel({
 
   // Add confetti animation styles on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const style = document.createElement('style')
     style.textContent = `
       @keyframes confetti-fall {
@@ -169,7 +171,13 @@ export function RouletteWheel({
     document.head.appendChild(style)
     
     return () => {
-      document.head.removeChild(style)
+      try {
+        if (document.head.contains(style)) {
+          document.head.removeChild(style)
+        }
+      } catch (e) {
+        // Style element already removed
+      }
     }
   }, [])
 
