@@ -14,6 +14,7 @@ import { PrizesShowcase } from '@/components/prizes-showcase'
 import { FAQSection } from '@/components/faq-section'
 import { CountdownTimer } from '@/components/raffle/countdown-timer'
 import { TermsAndConditions } from '@/components/legal/terms-and-conditions'
+import { ClientOnly } from '@/components/client-only'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'1000' | '2000' | '3000'>('1000')
@@ -215,10 +216,17 @@ export default function Home() {
       {/* Countdown Timer Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <CountdownTimer
-            title="Próximo Sorteo"
-            subtitle="Jueves a las 9 PM (Horario Chile)"
-          />
+          <ClientOnly fallback={
+            <div className="bg-gradient-to-br from-pink-600 to-purple-600 border-2 border-white shadow-2xl rounded-lg p-12 text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+              <p className="mt-4 text-white">Cargando cuenta regresiva...</p>
+            </div>
+          }>
+            <CountdownTimer
+              title="Próximo Sorteo"
+              subtitle="Jueves a las 9 PM (Horario Chile)"
+            />
+          </ClientOnly>
         </div>
       </section>
 
@@ -320,7 +328,19 @@ export default function Home() {
           </div>
 
           <div className="max-w-6xl mx-auto">
-            <PrizesShowcase />
+            <ClientOnly fallback={
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="border border-white/20 rounded-lg p-6">
+                    <div className="h-48 bg-white/10 rounded-lg mb-4 animate-pulse"></div>
+                    <div className="h-4 bg-white/10 rounded mb-2 animate-pulse w-3/4"></div>
+                    <div className="h-4 bg-white/10 rounded mb-2 animate-pulse w-1/2"></div>
+                  </div>
+                ))}
+              </div>
+            }>
+              <PrizesShowcase />
+            </ClientOnly>
           </div>
 
           <div className="text-center mt-12">
@@ -520,7 +540,14 @@ export default function Home() {
           </div>
 
           <div className="flex justify-center">
-            <RouletteWheel />
+            <ClientOnly fallback={
+              <div className="w-full max-w-2xl mx-auto border border-white/20 rounded-lg p-12 text-center">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold mb-4"></div>
+                <p className="text-muted-foreground">Cargando ruleta...</p>
+              </div>
+            }>
+              <RouletteWheel />
+            </ClientOnly>
           </div>
         </div>
       </section>
