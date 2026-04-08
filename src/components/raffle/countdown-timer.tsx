@@ -46,15 +46,8 @@ export function CountdownTimer({
     minutes: 0,
     seconds: 0
   })
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-
     const calculateTimeLeft = () => {
       const now = new Date()
       const target = new Date()
@@ -96,21 +89,7 @@ export function CountdownTimer({
     const interval = setInterval(updateTime, 1000)
 
     return () => clearInterval(interval)
-  }, [mounted, targetDay, targetHour, targetMinute])
-
-  // Don't render until mounted to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <Card className="bg-gradient-to-br from-pink-600 to-purple-600 border-2 border-white shadow-2xl">
-        <CardContent className="p-8 md:p-12">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-            <p className="mt-4 text-white">Cargando cuenta regresiva...</p>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
+  }, [targetDay, targetHour, targetMinute])
 
   return (
     <Card className="bg-gradient-to-br from-pink-600 to-purple-600 border-2 border-white shadow-2xl">
