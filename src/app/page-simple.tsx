@@ -1,11 +1,10 @@
-export default function SimplePage() {
+export default function TestPage() {
   return (
-    <div style={{ padding: '50px', fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ fontSize: '48px', color: '#333' }}>Única y Exclusiva Rifa de la Belleza</h1>
-      <p style={{ fontSize: '24px', color: '#666' }}>¡Hola! El servidor está funcionando correctamente.</p>
-      <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '10px' }}>
-        <p>Si puedes ver esto, la aplicación está funcionando.</p>
-        <p>Puedes hacer clic en el botón de abajo para ver la versión completa.</p>
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">Página de Prueba</h1>
+        <p className="text-xl">Si ves esto, no hay error de hidratación.</p>
+        <p className="text-gray-400 mt-4">Versión simple sin componentes complejos.</p>
       </div>
     </div>
   )
