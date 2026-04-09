@@ -23,14 +23,14 @@ export function TicketSelectorModal({ isOpen, onClose, ticketPrice, ticketType }
   const [isPurchasing, setIsPurchasing] = useState(false)
 
   // Reset when modal opens
-  useState(() => {
+  useEffect(() => {
     if (isOpen) {
       setSelectedTickets([])
       setCustomerName('')
       setCustomerPhone('')
       setCustomerEmail('')
     }
-  })
+  }, [isOpen])
 
   const availableTickets = Array.from({ length: 100 }, (_, i) => i + 1)
 
