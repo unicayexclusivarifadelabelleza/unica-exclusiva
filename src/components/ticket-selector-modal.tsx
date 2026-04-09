@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,11 +11,12 @@ import { X, Ticket, Check } from 'lucide-react'
 interface TicketSelectorModalProps {
   isOpen: boolean
   onClose: () => void
+  onConfirm?: (tickets: number[], customerData: any) => void
+  level?: string
   ticketPrice: number
-  ticketType: string
 }
 
-export function TicketSelectorModal({ isOpen, onClose, ticketPrice, ticketType }: TicketSelectorModalProps) {
+export function TicketSelectorModal({ isOpen, onClose, onConfirm, level, ticketPrice }: TicketSelectorModalProps) {
   const [selectedTickets, setSelectedTickets] = useState<number[]>([])
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
@@ -65,6 +66,16 @@ export function TicketSelectorModal({ isOpen, onClose, ticketPrice, ticketType }
       return
     }
 
+    if (onConfirm) {
+      // Use the callback if provided (for development/testing)
+      onConfirm(selectedTickets, {
+        name: customerName,
+        phone: customerPhone,
+        email: customerEmail
+      })
+      return
+    }
+
     setIsPurchasing(true)
 
     try {
@@ -77,7 +88,7 @@ export function TicketSelectorModal({ isOpen, onClose, ticketPrice, ticketType }
           customerPhone,
           customerEmail,
           ticketPrice,
-          ticketType
+          ticketType: level || 'unknown'
         })
       })
 
@@ -108,7 +119,7 @@ export function TicketSelectorModal({ isOpen, onClose, ticketPrice, ticketType }
               Selecciona tus Boletos
             </h2>
             <p className="text-muted-foreground">
-              {ticketType} - ${ticketPrice.toLocaleString()} CLP cada uno
+              {level || 'Rifa'} - ${ticketPrice.toLocaleString()} CLP cada uno
             </p>
           </div>
           <Button
@@ -132,7 +143,7 @@ export function TicketSelectorModal({ isOpen, onClose, ticketPrice, ticketType }
                 variant="outline"
                 size="sm"
                 onClick={toggleAll}
-                className="border-white text-white hover:bg-white/10"
+                className="border-white text-white hover:bg-white/10 ml-2"
               >
                 {selectedTickets.length === 20 ? 'Deseleccionar Todos' : 'Seleccionar 20 Aleatorios'}
               </Button>
