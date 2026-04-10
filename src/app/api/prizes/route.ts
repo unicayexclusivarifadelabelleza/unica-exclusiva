@@ -3,8 +3,8 @@ import { db } from '@/lib/db'
 
 export async function GET() {
   try {
-    // Get the active raffle
-    const activeRaffle = await db.raffle.findFirst({
+    // Get all active raffles
+    const activeRaffles = await db.raffle.findMany({
       where: {
         status: 'active'
       },
@@ -13,26 +13,29 @@ export async function GET() {
       }
     })
 
-    if (!activeRaffle) {
-      return NextResponse.json({ prizes: [] })
+    if (!activeRaffles || activeRaffles.length === 0) {
+      return NextResponse.json({ prizes: [], raffles: [] })
     }
+
+    // Get all prizes from all active raffles
+    const allPrizes = activeRaffles.flatMap(raffle => raffle.prizes || [])
 
     // Group prizes by ticket price tier
     const prizesByTier = {
-      bronce: activeRaffle.prizes.filter(p => activeRaffle.ticketPrice === 1000),
-      plata: activeRaffle.prizes.filter(p => activeRaffle.ticketPrice === 2000),
-      oro: activeRaffle.prizes.filter(p => activeRaffle.ticketPrice === 3000)
+      bronce: allPrizes.filter(p => p.value && p.value <= 15000),
+      plata: allPrizes.filter(p => p.value && p.value > 15000 && p.value <= 25000),
+      oro: allPrizes.filter(p => p.value && p.value > 25000)
     }
 
     return NextResponse.json({
-      raffle: activeRaffle,
-      prizes: activeRaffle.prizes,
-      prizesByTier
+      prizes: allPrizes,
+      prizesByTier,
+      raffles: activeRaffles
     })
   } catch (error) {
     console.error('Error fetching prizes:', error)
     return NextResponse.json(
-      { error: 'Error al obtener los premios' },
+      { error: 'Error al obtener los premios', prizes: [], raffles: [] },
       { status: 500 }
     )
   }
